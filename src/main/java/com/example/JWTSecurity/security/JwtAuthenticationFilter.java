@@ -2,14 +2,12 @@ package com.example.JWTSecurity.security;
 
 import com.example.JWTSecurity.Repository.UserRepository;
 import com.example.JWTSecurity.Service.JwtService;
-import com.example.JWTSecurity.security.Exceptions.JwtErrorHandler;
-import io.jsonwebtoken.JwtHandler;
+import com.example.JWTSecurity.exceptionHandling.securityExceptions.JwtErrorHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

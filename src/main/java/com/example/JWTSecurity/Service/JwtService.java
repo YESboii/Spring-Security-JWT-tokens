@@ -1,12 +1,10 @@
 package com.example.JWTSecurity.Service;
 
 import com.example.JWTSecurity.Repository.UserRepository;
-import com.example.JWTSecurity.security.Exceptions.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

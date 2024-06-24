@@ -1,0 +1,11 @@
+spring.application.name=JWTSecurity
+spring.datasource.url=jdbc:mysql://localhost:wxyz/dbname
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+server.port=8090
+
+application.jwt.secretKey = 5388399e24eb3a74f16d5f8c7c7ec2f7f6a5b43ea3ca686586077d6861421582
+application.jwt.expiration=30000

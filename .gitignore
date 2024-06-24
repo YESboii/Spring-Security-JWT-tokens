@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Exclude all application.properties files ###
+application*.properties
