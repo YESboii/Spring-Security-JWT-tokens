@@ -1,6 +1,6 @@
 package com.example.JWTSecurity.Model;
 
-import com.example.JWTSecurity.Model.Roles.Role;
+import com.example.JWTSecurity.Model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -43,11 +43,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean isEnabled;
 
-    @JsonIgnore
-    private String registrationKey;
 
-    @JsonIgnore
-    private LocalDateTime expirationTime;
 
 
     @Override

@@ -7,6 +7,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
@@ -35,10 +37,13 @@ public class EmailService {
     }
 
     public void sendRegistrationMessage(String registrationKey, String email){
+
         JavaMailSenderImpl mailSender = configure();
         System.out.println(email);
         int i=2;
-
+        if(registrationKey==null){
+            throw new NullPointerException("Cannot be null,Registration key");
+        }
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

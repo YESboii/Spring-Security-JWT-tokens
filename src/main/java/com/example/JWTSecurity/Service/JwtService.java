@@ -1,5 +1,8 @@
 package com.example.JWTSecurity.Service;
 
+import com.example.JWTSecurity.Model.Token;
+import com.example.JWTSecurity.Model.User;
+import com.example.JWTSecurity.Repository.TokenRepository;
 import com.example.JWTSecurity.Repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -26,21 +29,31 @@ public class JwtService {
 
     private final UserRepository userRepository;
 
-    @Value("${application.jwt.expiration}")
-    private long expiration;
+    @Value("${application.jwt.access-expiration}")
+    private long acccessExpiration;
+    @Value("${application.jwt.refresh-expiration}")
+    private long refreshExpiration;
+    private final TokenRepository tokenRepository;
 
-    public String generateToken(UserDetails userDetails){
+    private String generateToken(User user,long time){
         return Jwts
                 .builder()
                 .addClaims(new HashMap<>())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + time))
                 .signWith(getSignInKey())
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getUsername())
+                .claim("id",user.getId())
                 .compact();
     }
+    public String generateAccessToken(User user){
+        return generateToken(user,acccessExpiration);
+    }
+    public String generateRefreshToken(User user){
+        return generateToken(user,refreshExpiration);
+    }
     public boolean verifyToken(String extractedEmail,UserDetails userDetails,String token){
-        return !isExpired(token) && extractedEmail.equals(userDetails.getUsername()) ;
+        return !isExpired(token) && extractedEmail.equals(userDetails.getUsername()) && verifyTokenIsNotRevoked(token) ;
     }
     public String extractToken(HttpServletRequest httpRequest){
         String token = httpRequest.getHeader("Authorization");
@@ -70,11 +83,19 @@ public class JwtService {
     public String extractUsername(String token){
         return extractClaim(token,Claims::getSubject);
     }
+    public Integer extractId(String token){
+        return extractAllClaims(token).get("id", Integer.class);
+    }
     private boolean isExpired(String token){
         Date expiredDate = getExpiration(token);
         return expiredDate.before(new Date());
     }
     private Date getExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
+    }
+
+    private boolean verifyTokenIsNotRevoked(String jwt){
+        Token t = tokenRepository.findTokenByJwt(jwt).orElseThrow(RuntimeException::new); ///highly unlikely cuz if the token provided was some random token it would throw error earlier.
+        return !t.isRevoked();
     }
 }

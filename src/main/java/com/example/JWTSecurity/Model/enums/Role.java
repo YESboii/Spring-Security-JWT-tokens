@@ -1,4 +1,4 @@
-package com.example.JWTSecurity.Model.Roles;
+package com.example.JWTSecurity.Model.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

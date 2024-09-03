@@ -1,5 +1,6 @@
 package com.example.JWTSecurity.security;
-
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import com.example.JWTSecurity.Repository.UserRepository;
 import com.example.JWTSecurity.Service.JwtService;
 import com.example.JWTSecurity.exceptionHandling.securityExceptions.JwtErrorHandler;
@@ -28,7 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("JwtAuthenticationFilter: doFilterInternal called");
         String token = jwtService.extractToken(request);
-
+        int i= 0;
+//        if(i<1)  throw new BadCredentialsException("test");
         if(token == null){
             filterChain.doFilter(request,response);
             return;
@@ -59,7 +61,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         catch (Exception e){
-            JwtErrorHandler.handle(request,response,e);  //Delegate it to the exception handler
+            System.out.println(e.getClass());
+            e.printStackTrace();
+            JwtErrorHandler.handle(request,response,e);  //Better way is to delegate it to the Exception translation filter
+                                                        //by catching the jwt exceptions and rethrowing
+                                                        // some exceptions(create subclass of the Authentication exception)
         }
     }
 
