@@ -1,23 +1,25 @@
 package com.example.JWTSecurity.Service;
 
 import com.example.JWTSecurity.exceptionHandling.exceptions.EmailServiceException;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authorization.AuthorizationManager;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
-import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
 
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import java.util.Properties;
 
 @Service
 public class EmailService {
+    @Value("${app.email}")
+    private   String email;
+    @Value("${app.password}")
+    private  String password;
+    private JavaMailSenderImpl mailSender;
 
-
-    private static JavaMailSenderImpl configure(){
+    @PostConstruct
+    private  void configure(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         Properties properties = mailSender.getJavaMailProperties();
         properties.put("mail.transport.protocol","smtp");
@@ -30,19 +32,16 @@ public class EmailService {
 
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(465);
-        mailSender.setUsername("foodieezproject123@gmail.com");
-        mailSender.setPassword("dihclhwowhwkwnok");
-
-        return mailSender;
+        mailSender.setUsername(email);
+        mailSender.setPassword(password);
+        this.mailSender = mailSender;
     }
 
     public void sendRegistrationMessage(String registrationKey, String email){
 
-        JavaMailSenderImpl mailSender = configure();
         System.out.println(email);
-        int i=2;
-        if(registrationKey==null){
-            throw new NullPointerException("Cannot be null,Registration key");
+        if (registrationKey == null || email == null) {
+            throw new NullPointerException("Registration key or recipient email cannot be null");
         }
         try {
             MimeMessage message = mailSender.createMimeMessage();
